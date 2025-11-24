@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.2.1
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      discovery.type: single-node
+    networks:
+      - elasticsearch-net
+
+networks:
+  elasticsearch-net:
+    driver: bridge
