@@ -1,0 +1,15 @@
+AssistantService.ts
+BookingService.ts
+HotelBookingService.ts
+com/example/application/services/HotelBookingDetails.ts
+com/example/application/model/HotelBooking.ts
+com/example/application/model/HotelBookingStatus.ts
+com/example/application/model/RoomType.ts
+com/example/application/model/Customer.ts
+connect-client.default.ts
+endpoints.ts
+com/example/application/services/HotelBookingDetailsModel.ts
+com/example/application/model/HotelBookingModel.ts
+com/example/application/model/HotelBookingStatusModel.ts
+com/example/application/model/RoomTypeModel.ts
+com/example/application/model/CustomerModel.ts
