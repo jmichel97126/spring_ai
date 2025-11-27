@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "basic-demo": {
+      "command": "java.exe",
+      "args": [
+        "-jar",
+        "C:\absolute\path\to\flightbooking_mcp_backend_server-0.0.1-SNAPSHOT.jar"
+      ],
+      "env": {
+        "JAVA_TOOL_OPTIONS": "-Xms256m -Xmx512m"
+      },
+      "autoStart": true
+    }
+  }
+}
