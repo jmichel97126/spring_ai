@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring AI Gemini Chat Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+        .loading {
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<h1>Spring AI Gemini Chat Demo</h1>
+
+<div class="container">
+    <h2>Simple Text Generation</h2>
+    <div class="form-group">
+        <label for="simpleMessage">Message:</label>
+        <input type="text" id="simpleMessage" value="Tell me a joke" />
+    </div>
+    <button onclick="generateText()">Generate</button>
+    <div id="simpleResponse" class="response" style="display: none;"></div>
+</div>
+
+<div class="container">
+    <h2>Chat with Temperature Control</h2>
+    <div class="form-group">
+        <label for="chatMessage">Message:</label>
+        <textarea id="chatMessage" rows="3" placeholder="Enter your message here..."></textarea>
+    </div>
+    <div class="form-group">
+        <label for="temperature">Temperature (0.0 - 1.0):</label>
+        <input type="number" id="temperature" min="0" max="1" step="0.1" value="0.5" />
+    </div>
+    <button onclick="chatWithOptions()">Send</button>
+    <div id="chatResponse" class="response" style="display: none;"></div>
+</div>
+
+<div class="container">
+    <h2>Template-based Story Generation</h2>
+    <div class="form-group">
+        <label for="storyTopic">Topic:</label>
+        <input type="text" id="storyTopic" placeholder="Enter a topic for the story..." />
+    </div>
+    <button onclick="generateStory()">Generate Story</button>
+    <div id="storyResponse" class="response" style="display: none;"></div>
+</div>
+
+<script>
+    async function generateText() {
+        const message = document.getElementById('simpleMessage').value;
+        const responseDiv = document.getElementById('simpleResponse');
+
+        responseDiv.innerHTML = '<div class="loading">Generating...</div>';
+        responseDiv.style.display = 'block';
+
+        try {
+            const response = await fetch(`/ai/generate?message=${encodeURIComponent(message)}`);
+            const data = await response.json();
+            responseDiv.innerHTML = `<strong>Response:</strong><br>${data.generation}`;
+        } catch (error) {
+            responseDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+        }
+    }
+
+    async function chatWithOptions() {
+        const message = document.getElementById('chatMessage').value;
+        const temperature = parseFloat(document.getElementById('temperature').value);
+        const responseDiv = document.getElementById('chatResponse');
+
+        if (!message.trim()) {
+            alert('Please enter a message');
+            return;
+        }
+
+        responseDiv.innerHTML = '<div class="loading">Processing...</div>';
+        responseDiv.style.display = 'block';
+
+        try {
+            const response = await fetch('/ai/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    temperature: temperature
+                })
+            });
+            const data = await response.json();
+            responseDiv.innerHTML = `
+                    <strong>Message:</strong> ${data.message}<br>
+                    <strong>Temperature:</strong> ${data.temperature}<br>
+                    <strong>Response:</strong><br>${data.response}
+                `;
+        } catch (error) {
+            responseDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+        }
+    }
+
+    async function generateStory() {
+        const topic = document.getElementById('storyTopic').value;
+        const responseDiv = document.getElementById('storyResponse');
+
+        if (!topic.trim()) {
+            alert('Please enter a topic');
+            return;
+        }
+
+        responseDiv.innerHTML = '<div class="loading">Generating story...</div>';
+        responseDiv.style.display = 'block';
+
+        try {
+            const response = await fetch(`/ai/template?topic=${encodeURIComponent(topic)}`);
+            const data = await response.json();
+            responseDiv.innerHTML = `
+                    <strong>Topic:</strong> ${data.topic}<br>
+                    <strong>Story:</strong><br>${data.story}
+                `;
+        } catch (error) {
+            responseDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+        }
+    }
+</script>
+</body>
+</html>
