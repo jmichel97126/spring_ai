@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "basic-demo": {
+      "command": "java.exe",
+      "args": [
+        "-jar",
+        "C:\absolute\path\to\mcp-server-basic-demo.jar"
+      ],
+      "env": {
+        "JAVA_TOOL_OPTIONS": "-Xms256m -Xmx512m"
+      },
+      "autoStart": true
+    }
+  }
+}
